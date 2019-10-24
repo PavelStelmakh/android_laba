@@ -8,6 +8,20 @@ import android.view.ViewGroup;
 
 public class FindMedicine extends Fragment
 {
+    private Medicine[] medicines = new Medicine[] {
+            new Medicine("Analgin", 2, "Poland"),
+            new Medicine("Analgin", 2, "Poland"),
+            new Medicine("Analgin", 2, "Poland"),
+            new Medicine("Analgin", 2, "Poland"),
+            new Medicine("Analgin", 2, "Poland"),
+            new Medicine("Analgin", 2, "Poland"),
+            new Medicine("Analgin", 2, "Poland"),
+            new Medicine("Analgin", 2, "Poland"),
+            new Medicine("Analgin", 2, "Poland"),
+            new Medicine("Analgin", 2, "Poland"),
+            new Medicine("Analgin", 2, "Poland")
+    };
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
