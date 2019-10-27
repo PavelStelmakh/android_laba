@@ -3,6 +3,8 @@ package com.example.lenovo.laba;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,8 +35,12 @@ public class FindMedicine extends Fragment
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Medicine selectedMedicine = (Medicine)parent.getItemAtPosition(position);
+                Bundle bundle = new Bundle();
+//                bundle.putString("medicine", selectedMedicine.toString());
+                bundle.putSerializable("medicine", selectedMedicine);
 
                 Fragment fragment = new MedicineAbout();
+                fragment.setArguments(bundle);
                 FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction()
                         .replace(R.id.content_frame, fragment).commit();
@@ -44,6 +50,13 @@ public class FindMedicine extends Fragment
         medicineList.setOnItemClickListener(itemClickListener);
 
         medicineList.setAdapter(adapter);
+
+        MainActivity.toggle.setDrawerIndicatorEnabled(true);
+        MainActivity.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        MainActivity.toggle = new ActionBarDrawerToggle(
+                MainActivity.instance, MainActivity.drawer, MainActivity.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        MainActivity.drawer.addDrawerListener(MainActivity.toggle);
+        MainActivity.toggle.syncState();
 
         return rootView;
     }

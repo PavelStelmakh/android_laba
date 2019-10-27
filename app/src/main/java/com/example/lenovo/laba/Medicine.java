@@ -1,6 +1,8 @@
 package com.example.lenovo.laba;
 
-public class Medicine {
+import java.io.Serializable;
+
+public class Medicine implements Serializable {
     private String Name;
     private double Price;
     private String Producer;
