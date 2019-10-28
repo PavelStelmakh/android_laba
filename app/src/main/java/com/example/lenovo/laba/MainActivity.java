@@ -113,6 +113,9 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_support: {
                 fragment = new Support();
             } break;
+            case R.id.nav_add_pill:{
+                fragment = new AddPill();
+            }
         }
 
         if (fragment != null) {
