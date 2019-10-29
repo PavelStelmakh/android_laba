@@ -1,5 +1,7 @@
 package com.example.lenovo.laba;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.SimpleCursorAdapter;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -24,16 +27,20 @@ public class MainActivity extends AppCompatActivity
     public static Toolbar toolbar;
     public static MainActivity instance;
 
+    public static DatabaseHelper databaseHelper;
+    public static SQLiteDatabase db;
+    Cursor userCursor;
+    SimpleCursorAdapter userAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        databaseHelper = new DatabaseHelper(getApplicationContext());
+        databaseHelper.create_db();
+
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Medicine and pharmacies");
-//        ActionBar actionBar = getSupportActionBar();
-//        actionBar.setHomeButtonEnabled(true);
-//        actionBar.setDisplayHomeAsUpEnabled(true);
-//        actionBar.setDisplayShowTitleEnabled(false);
 //        setSupportActionBar(toolbar);
 
 //        FloatingActionButton fab = findViewById(R.id.fab);
@@ -64,6 +71,17 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_frame, new Home());
         ft.commit();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        db = databaseHelper.open();
+//        userCursor =  db.rawQuery("select * from "+ DatabaseHelper.TABLE, null);
+//        String[] headers = new String[] {DatabaseHelper.COLUMN_NAME, DatabaseHelper.COLUMN_YEAR};
+//        userAdapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item,
+//                userCursor, headers, new int[]{android.R.id.text1, android.R.id.text2}, 0);
+//        userList.setAdapter(userAdapter);
     }
 
     @Override
@@ -127,5 +145,11 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
 
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        db.close();
     }
 }

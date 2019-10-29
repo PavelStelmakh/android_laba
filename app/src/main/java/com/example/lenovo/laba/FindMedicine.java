@@ -1,5 +1,6 @@
 package com.example.lenovo.laba;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,13 +11,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.lenovo.laba.MainActivity.db;
+
 public class FindMedicine extends Fragment
 {
-    private List<Medicine> medicines = new ArrayList();
     ListView medicineList;
 
     @Override
@@ -26,18 +29,15 @@ public class FindMedicine extends Fragment
         View rootView = inflater.inflate(R.layout.activity_find_medicine, container,
                 false);
 
-        setInitialMedicine();
-
         medicineList = rootView.findViewById(R.id.medicine_list);
-        MedicineAdapter adapter = new MedicineAdapter(rootView.getContext(), R.layout.medicine_item, medicines);
 
         AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Medicine selectedMedicine = (Medicine)parent.getItemAtPosition(position);
+                Cursor cursor = (Cursor)parent.getItemAtPosition(position);
+                int _id = cursor.getInt(0);
                 Bundle bundle = new Bundle();
-//                bundle.putString("medicine", selectedMedicine.toString());
-                bundle.putSerializable("medicine", selectedMedicine);
+                bundle.putInt("medicine_id", _id);
 
                 Fragment fragment = new MedicineAbout();
                 fragment.setArguments(bundle);
@@ -47,9 +47,14 @@ public class FindMedicine extends Fragment
             }
         };
 
+        Cursor userCursor =  db.rawQuery("select * from "+ DatabaseHelper.TABLE, null);
+        String[] headers = new String[] {DatabaseHelper.COLUMN_ID, DatabaseHelper.COLUMN_NAME, DatabaseHelper.COLUMN_PRICE};
+        SimpleCursorAdapter  userAdapter = new SimpleCursorAdapter(rootView.getContext(), R.layout.medicine_item,
+                userCursor, headers, new int[]{R.id.medicine_item_id, R.id.medicine_item_title, R.id.medicine_item_price}, 0);
+
         medicineList.setOnItemClickListener(itemClickListener);
 
-        medicineList.setAdapter(adapter);
+        medicineList.setAdapter(userAdapter);
 
         MainActivity.toggle.setDrawerIndicatorEnabled(true);
         MainActivity.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
@@ -59,19 +64,5 @@ public class FindMedicine extends Fragment
         MainActivity.toggle.syncState();
 
         return rootView;
-    }
-
-    private void setInitialMedicine() {
-        medicines.add(new Medicine("Analgin", 2, "Poland", "For ill person"));
-        medicines.add(new Medicine("Analgin", 2, "Poland", "For ill person"));
-        medicines.add(new Medicine("Analgin", 2, "Poland", "For ill person"));
-        medicines.add(new Medicine("Analgin", 2, "Poland", "For ill person"));
-        medicines.add(new Medicine("Analgin", 2, "Poland", "For ill person"));
-        medicines.add(new Medicine("Analgin", 2, "Poland", "For ill person"));
-        medicines.add(new Medicine("Analgin", 2, "Poland", "For ill person"));
-        medicines.add(new Medicine("Analgin", 2, "Poland", "For ill person"));
-        medicines.add(new Medicine("Analgin", 2, "Poland", "For ill person"));
-        medicines.add(new Medicine("Analgin", 2, "Poland", "For ill person"));
-        medicines.add(new Medicine("Analgin", 2, "Poland", "For ill person"));
     }
 }
