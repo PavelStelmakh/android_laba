@@ -47,6 +47,16 @@ public class FindMedicine extends Fragment
             }
         };
 
+//        AdapterView.OnItemLongClickListener itemLongClickListener = new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long l) {
+//                Cursor cursor = (Cursor)parent.getItemAtPosition(position);
+//                int _id = cursor.getInt(0);
+//
+//                return true;
+//            }
+//        };
+
         Cursor userCursor =  db.rawQuery("select * from "+ DatabaseHelper.TABLE, null);
         String[] headers = new String[] {DatabaseHelper.COLUMN_ID, DatabaseHelper.COLUMN_NAME, DatabaseHelper.COLUMN_PRICE};
         SimpleCursorAdapter  userAdapter = new SimpleCursorAdapter(rootView.getContext(), R.layout.medicine_item,
