@@ -90,22 +90,6 @@ public class FindPharmacies extends Fragment implements OnMapReadyCallback
                     List<Address> addresses = null;
                     double lat = location.getLatitude();
                     double lon = location.getLongitude();
-
-//                    final Uri.Builder builder = new Uri.Builder()
-//                            .scheme("https")
-//                            .authority("maps.googleapis.com")
-//                            .appendPath("maps")
-//                            .appendPath("api")
-//                            .appendPath("place")
-//                            .appendPath("search")
-//                            .appendPath("json");
-//
-//                    builder.appendQueryParameter("location", Double.toString(location.getLatitude()) + "," + Double.toString(location.getLongitude()));
-//                    builder.appendQueryParameter("radius", "2000");
-//                    builder.appendQueryParameter("types", "pharmacies");
-//                    builder.appendQueryParameter("sensor", "false");
-//                    builder.appendQueryParameter("key", "AIzaSyAJ9dPcfte7jC-ls9Daot0wneD3pYTm7cw");
-//                    String response = null;
                     try {
                         addresses = geocoder.getFromLocationName(
                                 "apteka",
@@ -114,8 +98,6 @@ public class FindPharmacies extends Fragment implements OnMapReadyCallback
                                 lon - 0.003,
                                 lat + 0.003,
                                 lon + 0.003);
-//                        response = getContent(builder.build().toString());
-//                        Log.i("mapApp, data response", response);
                     } catch (IOException exception) {
                         Log.e("mapApp, data Query", exception.toString());
                     }
