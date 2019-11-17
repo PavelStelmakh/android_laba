@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -31,17 +32,22 @@ public class MainActivity extends AppCompatActivity
     public static SQLiteDatabase db;
     Cursor userCursor;
     SimpleCursorAdapter userAdapter;
+    static int _id = -1;
+    static int pillId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.getDefaultNightMode());
         databaseHelper = new DatabaseHelper(getApplicationContext());
         databaseHelper.create_db();
+        db = databaseHelper.open();
 
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Medicine and pharmacies");
-//        setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 //        FloatingActionButton fab = findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -74,15 +80,72 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        db = databaseHelper.open();
-//        userCursor =  db.rawQuery("select * from "+ DatabaseHelper.TABLE, null);
-//        String[] headers = new String[] {DatabaseHelper.COLUMN_NAME, DatabaseHelper.COLUMN_YEAR};
-//        userAdapter = new SimpleCursorAdapter(this, android.R.layout.two_line_list_item,
-//                userCursor, headers, new int[]{android.R.id.text1, android.R.id.text2}, 0);
-//        userList.setAdapter(userAdapter);
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt("_id", _id);
+        outState.putInt("pillId", pillId);
+
+        super.onSaveInstanceState(outState);
     }
+    // получение ранее сохраненного состояния
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        _id = savedInstanceState.getInt("_id");
+
+        Fragment fragment = null;
+
+        switch (_id) {
+            case R.id.nav_home: {
+                fragment = new Home();
+            } break;
+            case R.id.nav_find_medicine: {
+                fragment = new FindMedicine();
+            } break;
+            case R.id.nav_find_pharmacies: {
+                fragment = new FindPharmacies();
+            } break;
+            case R.id.nav_support: {
+                fragment = new Support();
+            } break;
+            case R.id.nav_add_pill:{
+                pillId = savedInstanceState.getInt("pillId");
+                Bundle bundle = new Bundle();
+                bundle.putInt("medicine_id", pillId);
+
+                fragment = new AddPill();
+                fragment.setArguments(bundle);
+            } break;
+            case R.id.action_web_site:
+            case R.id.nav_web_site: {
+                fragment = new WebSite();
+            } break;
+            case R.id.medicine_about: {
+                pillId = savedInstanceState.getInt("pillId");
+                Bundle bundle = new Bundle();
+                bundle.putInt("medicine_id", pillId);
+
+                fragment = new MedicineAbout();
+                fragment.setArguments(bundle);
+            } break;
+        }
+
+        if (fragment != null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, fragment).commit();
+        }
+    }
+
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        if (db == null || !db.isOpen()) {
+//            databaseHelper = new DatabaseHelper(getApplicationContext());
+//            databaseHelper.create_db();
+//            db = databaseHelper.open();
+//        }
+//    }
 
     @Override
     public void onBackPressed() {
@@ -102,10 +165,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+        _id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (_id == R.id.action_web_site) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, new WebSite()).commit();
             return true;
         }
 
@@ -115,10 +180,10 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
+        _id = item.getItemId();
         Fragment fragment = null;
 
-        switch (id) {
+        switch (_id) {
             case R.id.nav_home: {
                 fragment = new Home();
             } break;
@@ -133,7 +198,13 @@ public class MainActivity extends AppCompatActivity
             } break;
             case R.id.nav_add_pill:{
                 fragment = new AddPill();
-            }
+            } break;
+            case R.id.nav_web_site: {
+                fragment = new WebSite();
+//                getFragmentManager().beginTransaction()
+//                        .add(R.id.content_frame, new WebSite())
+//                        .commit();
+            } break;
         }
 
         if (fragment != null) {
