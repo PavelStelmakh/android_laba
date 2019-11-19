@@ -64,7 +64,7 @@ public class AddPill extends Fragment
             cv.put(DatabaseHelper.COLUMN_NAME, inputName.getText().toString());
             cv.put(DatabaseHelper.COLUMN_PRODUCER, inputProducer.getText().toString());
             cv.put(DatabaseHelper.COLUMN_DESCRIPTION, inputDescription.getText().toString());
-            cv.put(DatabaseHelper.COLUMN_PRICE, Double.parseDouble(inputPrice.getText().toString()));
+            cv.put(DatabaseHelper.COLUMN_PRICE, Double.parseDouble(inputPrice.getText().toString().replace(',', '.')));
 
             if (_id >= 0) {
                 db.update(DatabaseHelper.TABLE, cv, DatabaseHelper.COLUMN_ID + "=" + String.valueOf(_id), null);

@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = new Support();
             } break;
             case R.id.nav_add_pill:{
-                pillId = savedInstanceState.getInt("pillId");
+                pillId = savedInstanceState.getInt( "pillId");
                 Bundle bundle = new Bundle();
                 bundle.putInt("medicine_id", pillId);
 
